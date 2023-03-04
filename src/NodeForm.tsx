@@ -1,26 +1,32 @@
-import { useRef, useState } from "react"
+import { FormEvent, useRef, useState } from "react"
 import { Button, Col, Form, Row, Stack } from "react-bootstrap"
 import { Link } from "react-router-dom"
 import CreatableReactSelect from "react-select/creatable"
 import { INodeData, ITag } from "./App"
+import {v4 as uuidV4} from 'uuid';
 
-interface INodeFormProps {
-    onSumit : (data:INodeData) => void;
+interface INodeForm{
+    onSubmit : (data:INodeData) => void;
+    onAddTag : (tag:ITag) => void;
+    availableTags: ITag[]
 }
 
-function NodeForm({onSumit}:INodeFormProps) {
+function NodeForm({onSubmit, onAddTag,availableTags}:INodeForm) {
     const titleRef = useRef<HTMLInputElement>(null)
     const markdownRef = useRef<HTMLTextAreaElement>(null)
     const [selectedTags, setSelectedTags] = useState<ITag[]>([])
 
-    function handleSubmit(e) {
+    function handleSubmit(e : FormEvent) {
         e.preventDefault()
 
         const title = titleRef.current!.value
         const markdown = markdownRef.current!.value
         
-        onSumit({title, markdown, tags:[]})
+        onSubmit({title, markdown, tags:selectedTags})
     }
+    
+  
+
   return (
     <Form onSubmit={handleSubmit}>
         <Stack gap={4}>
@@ -37,11 +43,19 @@ function NodeForm({onSumit}:INodeFormProps) {
                         <CreatableReactSelect value={selectedTags.map(tag => {
                             return {label: tag.label, value: tag.id}
                         })} 
+                        onCreateOption={
+                            label => {
+                                const newTag = {id: uuidV4(), label}
+                                onAddTag(newTag)
+                                setSelectedTags( prev => [...prev, newTag])
+                            }
+                        }
                         onChange={tags  => {
                             setSelectedTags(tags.map(tag => {
                                 return {label: tag.label, id: tag.value}
                             }))
                         }}
+                        options={availableTags.map(tag => { return {label: tag.label, value: tag.id} })}
                         isMulti
                         />
                         </Form.Group>  
