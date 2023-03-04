@@ -1,6 +1,6 @@
 import { FormEvent, useRef, useState } from "react"
 import { Button, Col, Form, Row, Stack } from "react-bootstrap"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import CreatableReactSelect from "react-select/creatable"
 import { INodeData, ITag } from "./App"
 import {v4 as uuidV4} from 'uuid';
@@ -15,6 +15,7 @@ function NodeForm({onSubmit, onAddTag,availableTags}:INodeForm) {
     const titleRef = useRef<HTMLInputElement>(null)
     const markdownRef = useRef<HTMLTextAreaElement>(null)
     const [selectedTags, setSelectedTags] = useState<ITag[]>([])
+    const navigate = useNavigate();
 
     function handleSubmit(e : FormEvent) {
         e.preventDefault()
@@ -23,6 +24,8 @@ function NodeForm({onSubmit, onAddTag,availableTags}:INodeForm) {
         const markdown = markdownRef.current!.value
         
         onSubmit({title, markdown, tags:selectedTags})
+
+        navigate("..")
     }
     
   

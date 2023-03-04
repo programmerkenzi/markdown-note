@@ -5,12 +5,11 @@ import NewNode from "./NewNode"
 import useLocalStroage from './useLocalStroage';
 import { useMemo } from "react";
 import {v4 as uuidV4} from 'uuid';
+import NoteList from "./NoteList";
 
-export interface Note extends INodeData {
-  id: string;
-}
 
-interface IRowNote extends IRowNoteData {
+
+export interface IRowNote extends IRowNoteData {
   id:string
 }
 
@@ -57,7 +56,7 @@ function App()  {
 
     <Container className="my-4">
       <Routes>
-        <Route path="/" element={<h1>Home</h1>} />
+        <Route path="/" element={<NoteList availableTags={tags} notes={notes}/>} />
         <Route path="/new" element={<NewNode onSubmit={onCreateNote} onAddTag={onAddTag} availableTags={tags}/>} />
         <Route path="/:id">
         <Route index element={<h1>Show</h1>} />
